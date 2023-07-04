@@ -162,22 +162,125 @@ class Solution:
             minVal = min(minVal, total)
         return (-minVal + 1)
 
-
-###### Two pointers
+# ********************************* 2 pointer *********************************
 class Solution:
     def isPalindrome(self, s: str) -> bool:
         #The isalnum() method returns True if all the characters are alphanumeric, meaning alphabet letter (a-z) and numbers (0-9).
         #use "while" for case： s[left] has 2个连续 Non-AlphNumeric strings but s[right] has 1.
-        left, right = 0, len(s)- 1
+        left, right = 0, len(s) - 1
         while left < right:
-            while left< right and not s[left].isalnum():
+            # condition: check if not alnum, point to next character
+            # 再加一次left< right, 因为当testcase = ".,"，pointer如果不是alnum就会一直移动，然后string index out of range
+            while left < right and not s[left].isalnum():
                 left += 1
-            while left< right and not s[right].isalnum():
+
+            while left < right and not s[right].isalnum():
                 right -= 1
-            print(s[left].lower(),s[right].lower())
+   
             if s[left].lower() != s[right].lower():
                 return False
+            
+            # move: after check,update the pointer to new position
             left += 1
-            right -= 1
+            right -= 1 
         return True
+
         
+
+            
+class Solution:
+    def twoSumSorted(self, numbers: List[int], target: int) -> List[int]:
+        l = 0
+        h = len(numbers) - 1
+        while l < h:
+            curSum = numbers[l] + numbers[h]
+            if curSum == target:
+                return [l + 1, h + 1]
+            elif curSum < target:
+                l += 1
+            else:
+                h -= 1
+        return [-1, -1]
+    
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        nums.sort()
+        for i in range(len(nums)):
+            if nums[i] > 0:
+                break
+            if i == 0 or nums[i] != nums[i-1]:
+                self.twoSum(i, nums, res)
+        return res
+
+    def twoSum(self, i: int, num: List[int], res: List[List[int]]):
+        l = i + 1
+        h = len(num) - 1
+        while l < h:
+            sum = num[i] + num[l] + num[h]
+            if sum > 0:
+                h -= 1
+            elif sum < 0:
+                l += 1
+            else:
+                res.append([num[i], num[l], num[h]])
+                #keep searching other list
+                l += 1
+                h -= 1
+                # Make sure no duplicate. edge case : [-2,0,0,2,2],output: [[-2,0,2]]
+                while l < h and num[l] == num[l-1]:
+                    l += 1
+
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        res = 0
+        l, r = 0, len(height) - 1
+        while l < r:
+            area = (r - l)* min(height[l], height[r])
+            res = max(area, res)
+            if height[l] < height[r]:
+                l += 1
+            else:
+                r -= 1
+        return res
+                
+        
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        res = 0
+        l, r = 0, len(height) - 1
+        leftMax, rightMax = 0, 0
+        while l < r:
+            if height[l] < height[r]:
+                leftMax = max(leftMax, height[l])
+                res += leftMax - height[l]
+                l += 1
+            else:
+                rightMax = max(rightMax, height[r])
+                res += rightMax - height[r]
+                r -= 1
+        return res
+# ********************************* sliding window *********************************    
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        #left = buy, right = sell， we want buy low, sell high
+        maxP = 0 
+        l, r = 0, 1
+        while r < len(prices):
+            if prices[l] < prices[r]:
+                maxP = max(prices[r] - prices[l], maxP)
+            else:
+                l = r
+            r += 1
+        return maxP
+            
+
+
+
+
+
+
+
+
+
+
